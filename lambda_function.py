@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     y_class = np.array(output_list).argmax(axis=-1)
     print(y_class)
 
-    # Send the prediction resul back to our field sof sensor. 
+    # Send the prediction result back to our field sof sensor. 
     iot = boto3.client('iot-data', region_name='eu-central-1')
     response = iot.publish(topic='status/mls160/', qos=1, payload=str(y_class))
     
