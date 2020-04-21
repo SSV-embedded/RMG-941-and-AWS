@@ -5,7 +5,7 @@ import io
 
 # endpoint name defined in Jupyter notebook whe the endpoint is created.
 # You will need it to call the endpoint to do a new prediction.
-endpoint_name = "ssv-sagemaker-2020-03-26-10-30-25"
+endpoint_name = "<your endpoint>"
 
 def lambda_handler(event, context):
     
