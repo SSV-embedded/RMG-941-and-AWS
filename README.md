@@ -1,7 +1,7 @@
 # AWS/vSensor
 Virtual sensor (soft sensor) to automatically determine different states of machines and plants via machine learning and to make the result available to other applications via an API.
 
-![awsvsensor_schema_ampel](uploads/4e7d7adb2c4e7939af8dc790f8da1548/awsvsensor_schema_ampel.png)
+![awsvsensor_schema_ampel](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/awsvsensor_schema_ampel.png)
 
 The following example describes how a soft sensor in combination with the AWS cloud and machine learning algorithms can be used for condition monitoring tasks. It lists all necessary steps as well as the required hard- and software components for the realization.
 
@@ -16,7 +16,7 @@ To make classifications with the model, the sensor data must be streamed to the 
 
 The workflow for generating and deploying a machine learning model can be described with the engineering process shown in the following figure. Since the performance of a model can always be improved, the steps can be repeated sequentially. Once the model is deployed, classifications can be made by sending new values from the soft sensor to the SageMaker Endpoint.
 
-![ml_engineering_process](uploads/f7a96aaaeb9dfe7d7326194ea3aee843/ml_engineering_process.png)
+![ml_engineering_process](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/ml_engineering_process.png)
 
 1. The first step is to collect data. The data is used to train a machine learning model which will be used to monitor the condition of a target machine. There are many different methods to train such a model. One method is the supervised machine learning. Therefore the data of every machine state is gathered and labeled, so that the machine learning algorithm recognizes the different machine states after the training. Another training method is the unsupervised machine learning, where only the data of the machine during normal operation is gathered and used to train the model. In this case the model performs a one class classification, recognizing if the machine is working as desired or not.
 
@@ -36,14 +36,14 @@ The workflow for generating and deploying a machine learning model can be descri
 ### RMG/941
 The Remote Maintenance Gateway RMG/941 from **[SSV Software Systems](https://www.ssv-embedded.de)** runs with Embedded Linux and offers a lot of features like VPN, Python 3, Jupyter Notebook and Node-RED. Even the TensorFlow Lite runtime can be installed.
 
-![rmg941](uploads/fb88ff42073fa507e9b9eddde7dbce1b/rmg941.png)
+![rmg941](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/rmg941.png)
 
 For more information visit the **[RMG/941 product description](https://www.ssv-embedded.de/produkte/rmg941)**.
 
 ### MLS/160A
 The soft sensor MLS/160A has the Bosch BMI160 at its heart with accelerometer and gyroscope. It is able to stream measurement values with a maximum frequency of 1.6 kHz. The MLS/160A is connected with the RMG/941 via RS485 in half duplex mode.
 
-![mls160a](uploads/81badc4ba64baeee2abf8267a0a3584a/mls160a.png)
+![mls160a](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/mls160a.png)
 
 ## Software Components
 
@@ -70,7 +70,7 @@ Easy to use browser-based flow editor built on Node.js that makes it easy to wir
 
 # Step 1: Sensor Attachment and Vibration Source
 
-![aufbau4](uploads/787a46ea6c7c8d3a0cf93b4cdba21230/aufbau4.jpg)
+![aufbau4](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/aufbau4.jpg)
 
 The figure above shows what is used for our example. We use a simple 24 V PC fan from Sunon to simulate the target machine. The MLS/160A was placed on top of the fan. Since the quality of the monitoring depends heavily on the sensor position, the best place for mounting the sensor has to be found. The sensor is then connected to the RMG/941, which is initially used as a data logger to collect values needed for model creation. Once the finished model is available in the cloud, the RMG/941 acts as a gateway and transmits the new sensor values to the AWS IoT Core service.
 
@@ -84,7 +84,7 @@ The labels for the different machine states are:
 
 * 2 for an error (red line)
 
-![signals](uploads/f3ef28ead27cefab864d692b26f71275/signals.png)
+![signals](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/signals.png)
 
 ## Step 2: Data Acquisition for Model Generation
 
@@ -92,19 +92,19 @@ To start the data acquisition you have to log into the RMG/941 and open the SSV/
 
 Before recording values in a CSV file with PyDSlog some settings have to be made, like the sensor to use (data source), the sampling rate (frequency), the desired channels (resp. axes), the signal length (frame size) and also if the data should be labeled or not.
 
-![pydslog_1](uploads/579299d8e4050a800c888f5a7267cc46/pydslog_1.png)
+![pydslog_1](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/pydslog_1.png)
 
 After the setup click on the button **[Apply]** to start the recording. If you checked the box to label the data a field to enter a number (the label) which represents a certain state is available. The recording can be paused and restarted and of course also stopped.
 
 When the recording is stopped the created CSV files are stored in a new folder with the current timestamp as name. The files will also be displayed in the section **CSV files**.
 
-![pydslog_2](uploads/a5c54f704810e2fa9b6726c0cad3050b/pydslog_2.png)
+![pydslog_2](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/pydslog_2.png)
 
 ## Step 3: Storing CSV Files in AWS S3
 
 To upload and store the created CSV files in the S3 database click on the tab **AWS S3**. There you have to enter your AWS credentials as well as the S3 bucket name and region. The region should be the same as the SageMaker region (the SageMaker instance will be created in the following step). All this information is available in your AWS account. After entering the information click on **[Apply]**.
 
-![pydslog_3](uploads/5e226ec8b4f5fabc5e50881aa58f856a/pydslog_3.png)
+![pydslog_3](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/pydslog_3.png)
 
 To start the upload click on the **Amazon button** (the button with the “a”) next to the desired folder resp. CSV files. The files are then uploaded as a compressed **.tgz file** with the timestamp as name. After the upload the .tgz file appears in the S3 bucket.
 
@@ -117,7 +117,7 @@ In the Jupyter Notebook, a SageMaker Endpoint will be created. This Endpoint is 
 
 Since the Jupyter Notebook is only used to generate a machine learning model, you can stop the SageMaker instance as soon as the Endpoint is deployed.
 
-![notebook](uploads/93c4799d50e1daa9bf73a73e21c1cd71/notebook.png)
+![notebook](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/notebook.png)
 
 The next steps are described in the **Jupyter Notebook** from this example **[on GitHub](https://github.com/fbussv/RMG-941-and-AWS/blob/master/jupyter%20notebook/Deploy%20tensorflow%20model.ipynb)**.
 
@@ -125,13 +125,13 @@ The next steps are described in the **Jupyter Notebook** from this example **[on
 
 To call the SageMaker Endpoint and make a classification, a Lambda function is needed. For that, go to the Lambda service and click on the button **[Create function]**.
 
-![lambda_functions](uploads/528b925b6a2971814ec60cfb847df49d/lambda_functions.png)
+![lambda_functions](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/lambda_functions.png)
 
 A new window appears where you can enter a name for the Lambda function and select a runtime. For our example a Python 3 runtime is used. Click on **[Create function]** and the new Lambda function is created and an online editor opens where you can place your code.
 
 With the Lambda function you can process the values which arrive over the AWS IoT Core and forward them to other services. Lambda functions are used as a processing point between the different AWS services. The **Lambda function** we prepared for this example can be found here **[on GitHub](https://github.com/fbussv/RMG-941-and-AWS/blob/master/lambda%20function/lambda_function.py)**.
 
-![lambda_function_code](uploads/af29c3ebde7c298a847fb74b107e772d/lambda_function_code.png)
+![lambda_function_code](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/lambda_function_code.png)
 
 > **IMPORTANT: If you want to use functions from NumPy and SciPy, you will have to add a layer with this libraries.**
 
@@ -139,25 +139,25 @@ To interact with other AWS services it might be necessary to give the Lambda fun
 
 > **IMPORTANT: Don’t forget to change the name of your SageMaker Endpoint in the Lambda function.**
 
-![iam_lambda](uploads/a74121f9cc2801aae613b6b33b7fe878/iam_lambda.png)
+![iam_lambda](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iam_lambda.png)
 
 ## Step 6: Connecting to AWS IoT Core
 
 To send new sensor values directly to AWS and make classifications, it is necessary to connect the RMG/941 with the AWS IoT Core. Therefore log in the **AWS IoT Core console** and register a new device. 
 
-![iot1](uploads/4ed6d89411d30bba4626f402cdbca462/iot1.png)
+![iot1](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iot1.png)
 
 You can register a new thing (device) by clicking in the left menu on **Manage > Things** and then on **[Create]**. A new window appears, where you have to click on **[Create a single thing]**.
 
-![iot2](uploads/f64fad3d8283aa19851fbae6883d9a8f/iot2.png)
+![iot2](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iot2.png)
 
 In the next window you can assign to the thing a name (e.g. RMG/941) and click on **[Next]**. In the following window you can add a certificate to your new registered thing by clicking on **[Create certificate]**.
 
-![iot3](uploads/d8cfdbbd0769cce1f729123ff34a997b/iot3.png)
+![iot3](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iot3.png)
 
 > **IMPORTANT: The certificates have to be downloaded and saved in the RMG/941. Without the certificates it is not possible to establish a connection to AWS.**
 
-![iot4](uploads/6df6de65383176109c7e8a3ceca5732d/iot4.png)
+![iot4](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iot4.png)
 
 You have to download each certificate and then click on **[Activate]** and finally on **[Done]**.
 
@@ -171,23 +171,23 @@ In the section **AWS IoT endpoint** click on **[Durchsuchen…]/[Browse...]** an
 
 The next step is to create a policy in the **AWS IoT Core console**. In the left menu click on **Secure > Policies** and then on **[Create]**. A window like the following appears.
 
-![iot5](uploads/74dcd1802c574f6740825d4928f0512f/iot5.png)
+![iot5](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iot5.png)
 
 Here you can set a name for the policy. In the field **Action** enter `iot:*` to allow full access to the AWS IoT service and in the field **Resource ARN** just enter `*`. This will allow you to listen to all the MQTT topics of the things that were created before (the topic for the new values coming from the sensor will be defined later). Finally click on **[Create]**.
 
 After the policy is created, you will have to attach the policy to the certificate. For that click in the menu on **Certificates** and select the certificate you created before. Then click on **Actions > Attach policy** and select your policy.
 
-![attach_policy_cert](uploads/0ef7844f79617878cda95e18b4a11c9b/attach_policy_cert.PNG)
+![attach_policy_cert](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/attach_policy_cert.PNG)
 
 Now return to the PyDSlog app in the RMG/941 and open the tab **AWS IoT**.
 
-![pydslog_5](uploads/b7025f75af3beb63e54c00099a756772/pydslog_5.png)
+![pydslog_5](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/pydslog_5.png)
 
 In the section **Data preprocessing** you can enable to transpose the values so they are treated like a signal. If the transpose checkbox is set it is possible to do an FFT over the samples. Also the offset of the signals can be deleted, so the data volume to be sent will be smaller.
 
 In the section **AWS IoT endpoint** the MQTT topic where the AWS will wait for the values must be set. You also need to enter a **Rest API Endpoint address** in the field **Endpoint**. Therefore switch back to the **AWS IoT Core console**, navigate to **Manage > Things** and select your device. Then click on **Interact** on the left side. Now the Rest API Endpoint address is shown in the section **HTTPS**.
 
-![endpoint](uploads/b2e1217a92e04e148457d1c6e709fe13/endpoint.png)
+![endpoint](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/endpoint.png)
 
 Copy this address and enter it in the according field of the PyDSlog configuration. In the last section you can **enable the service** by checking the checkbox and clicking on **[Apply]**. PyDSlog will read the configurations and starts to stream to the AWS. To **stop the service** just uncheck the checkbox and click again on **[Apply]**.
 
@@ -197,17 +197,17 @@ To verify that the values are arriving in the AWS cloud go the **AWS IoT Core co
 
 Since the Lambda function needs to be triggered when new sensor values arrive to the AWS IoT Core, a rule has to be created. For that open the **AWS IoT Core console**, click in the left menu on **Act > Rules** and then on **[Create]**.
 
-![iot_rule1](uploads/cf38697fcf6b11bfd2b4551d0656a3ab/iot_rule1.png)
+![iot_rule1](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iot_rule1.png)
 
 A new window opens where the name for the rule has to be set. Further below in the section **Rule query statement** the MQTT topic from which the IoT messages are coming from must be defined. The topic has to be the same as defined in the AWS IoT endpoint in the PyDSlog app on the RMG/941. 
 
-![iot_rule2](uploads/597e13aa66c3e66b2f462e05dff4f613/iot_rule2.png)
+![iot_rule2](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/iot_rule2.png)
 
 **For example:** If the topic in the PyDSlog app is `rmg1/values`, enter` SELECT * FROM “rmg1/values”`. That means that everything that arrives on that topic will trigger this rule.
 
 Now an action for this rule must be defined. Therefore click on **[Add action]** and a list of possible actions is displayed.
 
-![action_1](uploads/0556efdeb387431d14cb2339cc5a2950/action_1.png)
+![action_1](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/action_1.png)
 
 Select **Send a message to a Lambda function** and click on **[Configure action]**. Now choose the Lambda function that we have created in **step 5**.
 
@@ -217,13 +217,13 @@ To visualize the classification results that represent the current state of our 
 
 To open Node-RED in the RMG/941 click in the menu on **Apps > Node-RED**. Enable Node-RED by checking the checkbox next to **Enable service** and click on **[Apply]**. A **green arrow** should appear on the right side to indicate that Node-RED is running. Now click on the link **node-red** on the right side. 
 
-![node_red1](uploads/1ada0201cb24de2aa7bd8e628754c0b9/node_red1.png)
+![node_red1](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/node_red1.png)
 
 Node-RED opens in a new window and you can see all nodes available on the left side. Here you can **[download even more nodes](http://www.ssv-embedded.de/downloads/igw941/)**.
 
 The Node-RED flow can be found on [Github](https://github.com/fbussv/RMG-941-and-AWS/blob/master/node-red/flow).
 
-![node-red](uploads/5f5b3993a19f7f75716f2c7fc1857cd7/node-red.PNG)
+![node-red](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/node-red.PNG)
 
 For our example we use the **MQTT node**, the **debug node** as well as the **template node** where the dashboard is stored.
 
@@ -235,17 +235,17 @@ The server is the **Rest API Endpoint address** of the AWS IoT Core like describ
 
 Finally an **MQTT topic** for the classification results must be defined:
 
-![lambda_topic](uploads/b21a71a8dadffc049371be055510b6fc/lambda_topic.png)
+![lambda_topic](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/lambda_topic.png)
 
 > **IMPORTANT: The MQTT topic has to be the same as the boto3 IoT client topic defined in the Lambda function in step 5.**
 
-![node-red2](uploads/5aa6d45e0cb15478119ddf7bd2d240c4/node-red2.PNG)
+![node-red2](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/node-red2.PNG)
 
 After that, you should see how the classification results arrive in Node-RED by clicking on the tab **debug**.
 
-![node-red3](uploads/8c9e9a7d117428341df069a135cd3b4c/node-red3.PNG)
+![node-red3](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/node-red3.PNG)
 
 Once everything is set up properly, open the dashboard by clicking on the tab **dashboard** and then on the **small arrow icon just below the dashboard tab**.
 
-![dashboard](uploads/dcc5279a24063e07a6097611da35ed20/dashboard.PNG)
+![dashboard](https://github.com/fbussv/RMG-941-and-AWS/blob/master/images/dashboard.PNG)
 
